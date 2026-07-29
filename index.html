@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LUMEN Atelier — Orbit 3D 핸드백</title>
+  <meta name="description" content="Three.js로 구현한 3D 인터랙티브 핸드백 쇼핑몰. 회전하고 색상을 바꿔보세요." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%9C%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Three.js via ES module CDN -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Announcement bar -->
+  <div class="announce">무료 배송 · 30일 무료 반품 · 지금 주문 시 내일 도착</div>
+
+  <!-- Header -->
+  <header class="nav">
+    <div class="nav-inner">
+      <button class="nav-burger" aria-label="menu">☰</button>
+      <a href="#" class="logo">LUMEN <span>ATELIER</span></a>
+      <nav class="nav-links">
+        <a href="#detail">제품 상세</a>
+        <a href="#features">특징</a>
+        <a href="#reviews">리뷰</a>
+      </nav>
+      <div class="nav-cart" aria-label="cart">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M6 6h15l-1.5 9h-12z" /><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M6 6 5 3H2"/>
+        </svg>
+        <span id="cart-count" class="cart-count">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero / product -->
+  <main>
+    <section class="product" id="detail">
+      <!-- 3D viewer -->
+      <div class="viewer">
+        <div class="stage">
+          <span class="badge">3D · 360° 회전</span>
+          <canvas id="scene"></canvas>
+          <div class="stage-loader">모델을 불러오는 중…</div>
+
+          <!-- Controls overlay -->
+          <div class="stage-controls">
+            <button id="rotate-left"  title="왼쪽으로 45° 회전">↺</button>
+            <button id="auto-rotate"  title="자동 회전">⟳ 자동</button>
+            <button id="reset-view"   title="시점 초기화">⤢ 초기화</button>
+            <button id="rotate-right" title="오른쪽으로 45° 회전">↻</button>
+          </div>
+        </div>
+        <p class="viewer-hint">💡 마우스로 드래그하면 자유롭게 돌려볼 수 있어요</p>
+      </div>
+
+      <!-- Product info -->
+      <div class="info">
+        <div class="breadcrumb">HOME / BAGS / <b>ORBIT TOTE</b></div>
+        <h1 class="title">Orbit Structured Tote</h1>
+
+        <div class="rating">
+          <span class="stars">★★★★★</span>
+          <span class="rating-num">4.9</span>
+          <span class="rating-count">· 리뷰 1,284개</span>
+        </div>
+
+        <div class="price">
+          <span class="price-now">₩389,000</span>
+          <span class="price-was">₩520,000</span>
+          <span class="price-off">25% OFF</span>
+        </div>
+
+        <p class="desc">
+          이탈리아산 풀그레인 레더로 제작된 구조적 실루엣의 토트백.
+          정교한 골드 하드웨어와 매트한 가죽 질감이 절제된 무드를 완성합니다.
+          아래에서 원하는 컬러를 선택해보세요.
+        </p>
+
+        <!-- Color -->
+        <div class="option">
+          <div class="option-label">컬러 — <span id="color-name">Classic Black</span></div>
+          <div class="swatches">
+            <button class="swatch active" data-color="#1a1a1a" data-stitch="#2a2a2a" data-name="Classic Black" style="--sw:#1a1a1a" title="Classic Black"></button>
+            <button class="swatch" data-color="#9e1b2f" data-stitch="#b64a58" data-name="Ruby Red"      style="--sw:#9e1b2f" title="Ruby Red"></button>
+            <button class="swatch" data-color="#1e2c50" data-stitch="#41527d" data-name="Navy Blue"     style="--sw:#1e2c50" title="Navy Blue"></button>
+            <button class="swatch" data-color="#a9764a" data-stitch="#c79a6d" data-name="Camel"          style="--sw:#a9764a" title="Camel"></button>
+            <button class="swatch" data-color="#e7e0d3" data-stitch="#cfc6b4" data-name="Ivory"          style="--sw:#e7e0d3" title="Ivory"></button>
+            <button class="swatch" data-color="#26443a" data-stitch="#4a6b60" data-name="Forest Green"   style="--sw:#26443a" title="Forest Green"></button>
+          </div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="option">
+          <div class="option-label">수량</div>
+          <div class="qty">
+            <button id="qty-minus" aria-label="minus">−</button>
+            <span id="qty">1</span>
+            <button id="qty-plus" aria-label="plus">+</button>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta">
+          <button id="add-to-cart" class="btn btn-primary">장바구니 담기</button>
+          <button id="buy-now" class="btn btn-ghost">바로 구매</button>
+        </div>
+
+        <ul class="perks">
+          <li>🚚 오늘 오후 3시 전 주문 시 내일 도착</li>
+          <li>↩️ 30일 이내 무료 반품 · 교환</li>
+          <li>🛡️ 정품 보증 2년 · 무상 A/S</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+      <h2 class="section-title">디테일이 만드는 차이</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-ic">🐄</div>
+          <h3>풀그레인 레더</h3>
+          <p>이탈리아 탄닌 무두질 가죽으로 시간이 지날수록 깊어지는 질감을 담았습니다.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-ic">✨</div>
+          <h3>18K 골드 코팅 하드웨어</h3>
+          <p>변색에 강한 골드 코팅 클래스프와 링으로 오래도록 빛나는 마감.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-ic">🧳</div>
+          <h3>구조적 실루엣</h3>
+          <p>단단한 바닥과 각진 모서리가 어떤 상황에서도 흐트러지지 않는 형태를 유지합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Spec strip -->
+    <section class="spec">
+      <div><span>사이즈</span>W 32 × H 24 × D 14 cm</div>
+      <div><span>무게</span>780 g</div>
+      <div><span>소재</span>풀그레인 카프스킨</div>
+      <div><span>수납</span>노트북 15" 수납 가능</div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="reviews" id="reviews">
+      <h2 class="section-title">고객 리뷰</h2>
+      <div class="review-grid">
+        <blockquote class="review">
+          <div class="stars">★★★★★</div>
+          <p>“화면으로 360도 돌려보고 컬러까지 확인하고 샀어요. 실물이 딱 화면 그대로라 만족스럽습니다.”</p>
+          <cite>— 김지연 · 인증 구매</cite>
+        </blockquote>
+        <blockquote class="review">
+          <div class="stars">★★★★★</div>
+          <p>“가죽 질감이 정말 고급스럽고 하드웨어 마감이 깔끔해요. 데일리로 매일 듭니다.”</p>
+          <cite>— 박서준 · 인증 구매</cite>
+        </blockquote>
+        <blockquote class="review">
+          <div class="stars">★★★★☆</div>
+          <p>“수납 공간이 넉넉하고 노트북도 들어가요. 색상 옵션이 다양해서 고르는 재미가 있네요.”</p>
+          <cite>— 이하늘 · 인증 구매</cite>
+        </blockquote>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="logo">LUMEN <span>ATELIER</span></div>
+      <p>Three.js 학습용 3D 쇼핑몰 데모 · 실제 판매 상품이 아닙니다.</p>
+      <p class="copy">© 2026 LUMEN Atelier. Built with Three.js.</p>
+    </div>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- Sticky mobile buy bar -->
+  <div class="mobile-buybar">
+    <div class="mb-price">₩389,000</div>
+    <button class="btn btn-primary" onclick="document.getElementById('add-to-cart').click()">장바구니 담기</button>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

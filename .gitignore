@@ -1,0 +1,7 @@
+# 개발용 로컬 설정 / 임시 파일
+.claude/
+.playwright-mcp/
+.DS_Store
+Thumbs.db
+node_modules/
+*.log
