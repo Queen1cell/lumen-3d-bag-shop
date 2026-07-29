@@ -15,7 +15,7 @@ Three.js로 구현한 **3D 인터랙티브 제품 상세페이지**입니다.
 | 항목 | URL |
 |------|-----|
 | 🌐 **Netlify 배포 URL** | https://gilded-daifuku-a0a7df.netlify.app |
-| 💻 **GitHub 저장소** | `저장소 생성 후 이곳에 붙여넣기` |
+| 💻 **GitHub 저장소** | https://github.com/Queen1cell/lumen-3d-bag-shop |
 | 📝 **소개 · 회고 문서** | [회고.md](회고.md) |
 
 ---
